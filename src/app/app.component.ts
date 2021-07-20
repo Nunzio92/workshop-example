@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Optional } from '@angular/core';
+import { StoreDevtools } from '@ngrx/store-devtools';
+import { AppSelectors } from './core/app-store/app.selector';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +9,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'workshop-example';
+  loading$: Observable<boolean>;
+
+  constructor(@Optional() private storeDevTool: StoreDevtools,
+              private appSelector: AppSelectors) {
+    this.loading$ = this.appSelector.loadingState$;
+  }
+
 }
