@@ -4,6 +4,7 @@
       <a  [href]="href | bypassSecurity" *ngIf="storeDevToolIsPresent" download="report.txt">Download report.txt</a>
       <br>
       <div> Loading State: {{loadingState$ | async}}</div>
+      <div>{{getTestValue}}</div> <button (click)="setNewVal()">add +1</button>
 
       <button (click)="startLoading()" class="btn btn-primary m-1">Start Loading</button>
       <button (click)="stopLoading()" class="btn btn-primary m-1">Stop Loading</button>

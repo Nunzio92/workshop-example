@@ -9,6 +9,8 @@ import { getModel1 } from '../store/feature1.action';
 import { take, takeUntil } from 'rxjs/operators';
 import { StoreDevtools } from '@ngrx/store-devtools';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { herPure } from '../../../core/pure';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-example',
@@ -23,11 +25,13 @@ export class ExampleComponent implements OnInit, OnDestroy {
   storeDevToolIsPresent: boolean;
   model1$: Observable<Model1[] | null>;
   form1: FormGroup;
+  testValue = {val: 0};
 
   constructor(private store: Store,
               private feature1Selector: Feature1Selectors,
               @Optional() private storeDevTool: StoreDevtools,
               private fb: FormBuilder,
+              private http: HttpClient,
               private appSelector: AppSelectors) {
     this.loadingState$ = this.appSelector.loadingState$;
     this.storeDevToolIsPresent = !!this.storeDevTool;
@@ -45,6 +49,16 @@ export class ExampleComponent implements OnInit, OnDestroy {
         this.href = "data:text/json;charset=utf-8," + JSON.stringify({...v});
       });
     }
+    this.http.get('gusConfig/getFlussiCustomizzabili').subscribe()
+  }
+
+  @herPure
+  get getTestValue(){
+    return this.testValue.val;
+  }
+
+  setNewVal(){
+    this.testValue = {...this.testValue, val: this.testValue.val+1};
   }
 
   downloadModel1() {

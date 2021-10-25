@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { PageNotFoundComponent } from './page-not-found.component';
 import { environment } from '../environments/environment';
+import { devDep, MockInterceptorModule } from '../../mock-interceptor';
 
 
 export function actionSanitizer(action: Action) {
@@ -69,6 +70,7 @@ export function stateSanitizer(state: State<any>) {
       //   dispatch: true, // dispatch custom actions or action creators
       // },
     }),
+    ...devDep
   ],
   providers: [],
   bootstrap: [AppComponent]
