@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import {
   HttpErrorResponse,
   HttpEvent,
@@ -9,12 +9,11 @@ import {
 } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, dematerialize, materialize, mergeMap } from 'rxjs/operators';
-import { MOCKFEEDBACK } from './mocks/feedback-prodotto.mock';
-import { ADVANCEDGUSIMPORTMOCK, TEST } from './mocks/advanced-gus-import.mock';
-import { QUESTIONARIPRODOTTOMOCK } from './mocks/questionari-prodotto.mock';
-import { SomeKeyOfType } from './utils/typeTranformation.type';
+import { AllKeyOfType, SomeKeyOfType } from './utils/typeTranformation.type';
 import { CloneUtil } from './utils/clone-util';
-import { MockGroup } from './utils/mock-group';
+import { MockWidgetService } from './widget/mock-widget.service';
+import { MOCKS_GROUPS } from './mock-interceptor.module';
+import { MappedMock } from './utils/mock-group';
 
 enum RequestMethods {
   GET = 'GET', POST = 'POST', PUT = 'PUT', DELETE = 'DELETE', OPTIONS = 'OPTIONS', HEAD = 'HEAD', PATCH = 'PATCH'
@@ -27,16 +26,25 @@ export type RequestMethodType = keyof typeof RequestMethods;
  */
 @Injectable()
 export class HttpMockFactory implements HttpInterceptor {
-  // Merge all mock files and generate a smaller structure that contains all mocks url divided for RequestMethods
-  myMock: SomeKeyOfType<RequestMethodType, object> = HttpMockFactory.mergeMockSmart(MOCKFEEDBACK, ADVANCEDGUSIMPORTMOCK, QUESTIONARIPRODOTTOMOCK);
-  myMockKeys: SomeKeyOfType<RequestMethodType, string[]> = HttpMockFactory.extractOrderedKeys(this.myMock);
+  myMock: AllKeyOfType<RequestMethodType, MappedMock>;
+  myMockKeys: AllKeyOfType<RequestMethodType, string[]>;
 
+  constructor(private mockWidgetService: MockWidgetService,
+              @Inject(MOCKS_GROUPS) private mockGroups: SomeKeyOfType<RequestMethodType>[]) {
+    if (mockGroups.length === 0) {
+      throw new Error('MockInterceptor is enabled but no mocks are provided! Inject some mock through MOCKS_GROUPS token.');
+    }
+    // Merge all mock files and generate a smaller structure that contains all mocks url divided for RequestMethods
+    this.myMock = HttpMockFactory.mergeMockSmart(this.mockGroups);
+    this.mockWidgetService.initMockList(this.myMock);
+    this.myMockKeys = HttpMockFactory.extractOrderedKeys(this.myMock);
+  }
 
-  private static extractOrderedKeys(object: any): SomeKeyOfType<RequestMethodType, []> {
-    return Object.keys(object).reduce((accumulator, currentValue) => {
+  private static extractOrderedKeys(object: AllKeyOfType<RequestMethodType, MappedMock>): AllKeyOfType<RequestMethodType, string[]> {
+    return (Object.keys(object) as RequestMethodType[]).reduce((accumulator, currentValue) => {
       let keys = Object.keys(object[currentValue]);
       return {...accumulator, [currentValue]: HttpMockFactory.moveGenericKeys(keys)};
-    }, {});
+    }, {}) as AllKeyOfType<RequestMethodType, string[]>;
   }
 
 
@@ -51,15 +59,13 @@ export class HttpMockFactory implements HttpInterceptor {
   }
 
 
-  private static mergeMockSmart(...objs: SomeKeyOfType<RequestMethodType, {}>[]): SomeKeyOfType<RequestMethodType, {}> {
-    return objs.reduce((accumulator: any, currentValue: any) => {
-      Object.keys(RequestMethods).forEach(v => {
-        // let newValue = currentValue[v] ? Object.keys(currentValue[v]).reduce((acc: any, curr: any) =>
-        //   ({...acc, ...{[curr]: {value: currentValue[v][curr], enabled: true, mockName: 'test'}}}), {}) : {}
+  private static mergeMockSmart(mockGroups: SomeKeyOfType<RequestMethodType, MappedMock>[]): AllKeyOfType<RequestMethodType, MappedMock> {
+    return mockGroups.reduce((accumulator, currentValue) => {
+      (Object.keys(RequestMethods) as RequestMethodType[]).forEach(v => {
         accumulator = {...accumulator, [v]: {...accumulator[v], ...currentValue[v]}};
       });
       return accumulator;
-    });
+    }) as AllKeyOfType<RequestMethodType, MappedMock>;
   }
 
   // private static mergeMockSmart(...objs: SomeKeyOfType<RequestMethodType, {}>[]): SomeKeyOfType<RequestMethodType, {}> {
@@ -72,7 +78,6 @@ export class HttpMockFactory implements HttpInterceptor {
   //     return accumulator;
   //   });
   // }
-
 
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -92,7 +97,7 @@ export class HttpMockFactory implements HttpInterceptor {
 
     // replace ** with regexp (.*|.*/) for metch all dynamic parameter in the url
     // @ts-ignore
-    let keyOfResponse = this.myMockKeys[method].find((key: string) => {
+    let keyOfResponse = this.myMockKeys[method]?.find((key: string) => {
       let regExp = new RegExp(key.replace('**', '(.*|.*/)') + '$');
       return regExp.test(url);
     }) || '';

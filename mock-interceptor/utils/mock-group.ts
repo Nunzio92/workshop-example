@@ -1,19 +1,16 @@
 import { SomeKeyOfType } from './typeTranformation.type';
 import { RequestMethodType } from '../http-mock-factory';
 
-export class MockGroup {
+export type MappedMock = {[key: string]: { value: any, enabled: boolean, mockName: string }}
 
-  constructor(mockName: string, values: SomeKeyOfType<RequestMethodType, object>) {
-
-    return Object.keys(values).reduce((accumulatore, current) =>
-      ({
-        ...accumulatore, ...{
-          // @ts-ignore
-          [current]: Object.keys(values[current]).reduce((acc, curr) => {
-            // @ts-ignore
-            return {...acc, ...{[curr]: {value: values[current][curr], enabled: true, mockName: mockName}}}
-          }, {})
-        }
-      }), {});
-  }
+export function createMockGroup(mockName: string, values: SomeKeyOfType<RequestMethodType>): SomeKeyOfType<RequestMethodType, MappedMock> {
+  let returnObject = (Object.keys(values) as RequestMethodType[]).reduce((accReqMet, currReqMet) =>
+    ({...accReqMet, ...{
+        [currReqMet]: Object.keys(values[currReqMet]).reduce((acc, curr) => {
+          return {...acc, ...{[curr]: {value: values[currReqMet][curr], enabled: true, mockName: mockName}}}
+        }, {})
+      }
+    }), {});
+  Object.defineProperty(returnObject, '_mockName', {value: mockName, enumerable: false})
+  return returnObject;
 }

@@ -1,7 +1,6 @@
-import { RequestMethodType } from '../http-mock-factory';
-import { SomeKeyOfType } from '../utils/typeTranformation.type';
+import { createMockGroup } from '../utils/mock-group';
 
-export const QUESTIONARIPRODOTTOMOCK: SomeKeyOfType<RequestMethodType, {}> = {
+export const QUESTIONARIPRODOTTOMOCK = createMockGroup('QuestionariProdotto',{
   GET: {
     'questionari-prodotto/**': {
       'success': true,
@@ -487,4 +486,4 @@ export const QUESTIONARIPRODOTTOMOCK: SomeKeyOfType<RequestMethodType, {}> = {
       'result': {},
     },
   },
-};
+});

@@ -1,10 +1,44 @@
-<ng-container *ngrxLet="mockStatus$; let mockStatus">
-
 <!-- Rounded switch -->
 Mock-Status:
 <label class="switch">
-  <input type="checkbox" [ngModel]="mockStatus">
+  <input type="checkbox" [(ngModel)]="mockWidgetService.mockEnable">
   <span class="slider round"></span>
 </label>
+<div style="display: flex; flex-direction: column">
+  <ng-container *ngFor="let mockGroup of mockGroups; let indexMockGroup = index">
+    <div [ngClass]="indexMockGroup% 2 === 0 ? 'w-black': 'w-gray'">
+      <div>{{mockGroup | extractNonEnumerable: '_mockName'}}</div>
+      <div *ngFor="let mock of (mockGroup | keyValuePipe)">
+        <div>{{mock.key}}</div>
+        <ng-container *ngFor="let entry of (mock.value | keyValuePipe)">
+          <div style="align-items: center; display: flex">
+            <label class="switch">
+              <input type="checkbox"
+                     [ngModel]="(mockWidgetService.mocksList | tuiMapper: extractEnable: mock.key: entry.key: 'enabled')"
+                     (ngModelChange)="changeStatus( mock.key, entry.key, $event)"
+                     [disabled]="!mockWidgetService.mockEnable">
+              <span class="slider round"></span>
+            </label>
+            <span>{{entry.key}}</span>
+          </div>
+        </ng-container>
 
-</ng-container>
+
+      </div>
+    </div>
+    <!--    <div *ngFor="let mock of mockWidgetService.mocksList.GET | keyValuePipe; let index = index">-->
+    <!--      <div style="background-color: gray"-->
+    <!--           *ngIf="mock.value.mockName !== (mockWidgetService.mocksList.GET | keyValuePipe)[index-1]?.value?.mockName">{{mock.value.mockName}}</div>-->
+    <!--      <div style="align-items: center; display: flex">-->
+    <!--        <label class="switch">-->
+    <!--          <input type="checkbox" [(ngModel)]="mock.value.enabled" [disabled]="!mockWidgetService.mockEnable">-->
+    <!--          <span class="slider round"></span>-->
+    <!--        </label>-->
+    <!--        <span>{{mock.key}}</span>-->
+    <!--      </div>-->
+    <!--    </div>-->
+  </ng-container>
+</div>
+
+
+
