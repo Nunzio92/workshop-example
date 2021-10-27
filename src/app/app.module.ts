@@ -10,7 +10,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { PageNotFoundComponent } from './page-not-found.component';
 import { environment } from '../environments/environment';
-import { devDep } from '../../mock-interceptor';
+import { HttpMockModule, MOCKS_GROUPS } from '../../mock-interceptor';
+import { ADVANCEDGUSIMPORTMOCK } from '../../mock-interceptor/mocks/advanced-gus-import.mock';
+import { MOCKFEEDBACK } from '../../mock-interceptor/mocks/feedback-prodotto.mock';
+import { QUESTIONARIPRODOTTOMOCK } from '../../mock-interceptor/mocks/questionari-prodotto.mock';
 
 
 export function actionSanitizer(action: Action) {
@@ -70,9 +73,14 @@ export function stateSanitizer(state: State<any>) {
       //   dispatch: true, // dispatch custom actions or action creators
       // },
     }),
-    ...devDep
+    ...HttpMockModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: MOCKS_GROUPS,
+      useValue: [ADVANCEDGUSIMPORTMOCK, MOCKFEEDBACK, QUESTIONARIPRODOTTOMOCK]
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

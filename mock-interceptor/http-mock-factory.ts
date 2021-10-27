@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   HttpErrorResponse,
   HttpEvent,
@@ -9,10 +9,9 @@ import {
 } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, dematerialize, materialize, mergeMap } from 'rxjs/operators';
-import { AllKeyOfType, SomeKeyOfType } from './utils/typeTranformation.type';
+import { AllKeyOfType } from './utils/typeTranformation.type';
 import { CloneUtil } from './utils/clone-util';
 import { HttpMockService } from './http-mock.service';
-import { MOCKS_GROUPS } from './mock-interceptor.module';
 import { MappedMock } from './utils/mock-group';
 
 export enum RequestMethods {
@@ -29,7 +28,7 @@ export class HttpMockFactory implements HttpInterceptor {
   private _myMockKeys: AllKeyOfType<RequestMethodType, string[]>;
 
   constructor(private mockWidgetService: HttpMockService,) {
-    // Merge all mock files and generate a smaller structure that contains all mocks url divided for RequestMethods
+    // Generate iterable structure for easy regex test
     this._myMockKeys = HttpMockFactory.extractOrderedKeys(this.mockWidgetService.myMock);
   }
 

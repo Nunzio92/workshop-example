@@ -15,13 +15,13 @@ export class HttpMockService {
   myMock!: AllKeyOfType<RequestMethodType, MappedMock>;
 
 
-  constructor(private injector: Injector,
-              @Inject(MOCKS_GROUPS) private mockGroups: SomeKeyOfType<RequestMethodType>[]) {
+  constructor(private injector: Injector, @Inject(MOCKS_GROUPS) private mockGroups: SomeKeyOfType<RequestMethodType>[]) {
     if (mockGroups.length === 0) {
       throw new Error('MockInterceptor is enabled but no mocks are provided! Inject some mock through MOCKS_GROUPS token.');
     }
   }
 
+  // Merge all mock files and generate a smaller structure that contains all mocks url divided for RequestMethods
   private static mergeMockSmart(mockGroups: SomeKeyOfType<RequestMethodType, MappedMock>[]): AllKeyOfType<RequestMethodType, MappedMock> {
     return mockGroups.reduce((accumulator, currentValue) => {
       (Object.keys(RequestMethods) as RequestMethodType[]).forEach(v => {
@@ -31,12 +31,12 @@ export class HttpMockService {
     }) as AllKeyOfType<RequestMethodType, MappedMock>;
   }
 
-  init(){
+  init(): void {
     this.myMock = HttpMockService.mergeMockSmart(this.mockGroups);
     this.createWidget()
   }
 
-  createWidget() {
+  createWidget(): void {
     const ComponentElement = createCustomElement(MockWidgetComponent, {injector: this.injector});
     // Register the custom element with the browser.
     customElements.define('mock-widget', ComponentElement);

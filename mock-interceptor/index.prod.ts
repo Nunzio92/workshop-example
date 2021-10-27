@@ -1,1 +1,1 @@
-export const devDep = [];
+export const HttpMockModule = [];
