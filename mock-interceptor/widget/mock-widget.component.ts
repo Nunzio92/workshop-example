@@ -13,7 +13,7 @@ import { MappedMock } from '../utils/mock-group';
 })
 export class MockWidgetComponent implements OnInit {
   activeAccordionIndex = 0;
-  isOpen = true;
+  isOpen = false;
 
   constructor(public mockWidgetService: HttpMockService,
               @Inject(MOCKS_GROUPS) public mockGroups: SomeKeyOfType<RequestMethodType, MappedMock>[]) {

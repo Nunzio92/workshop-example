@@ -6,7 +6,7 @@ import { MockWidgetComponent } from './widget/mock-widget.component';
 import { HttpMockService } from './http-mock.service';
 import { FormsModule } from '@angular/forms';
 import { SomeKeyOfType } from './utils/typeTranformation.type';
-import { ExtractNonEnumerable, KeyValuePipe, TuiMapperPipe } from './utils/pipes.pipe';
+import { ExtractNonEnumerable, KeyValuePipe, MapperPipe } from './utils/pipes.pipe';
 import { MappedMock } from './utils/mock-group';
 import { throwIfAlreadyLoaded } from './utils/module-import-guard';
 
@@ -30,7 +30,7 @@ export function httpMockInit(httpMockService: HttpMockService) { // aot dosen't 
     MockWidgetComponent,
     KeyValuePipe,
     ExtractNonEnumerable,
-    TuiMapperPipe
+    MapperPipe
   ],
   exports: [
     MockWidgetComponent

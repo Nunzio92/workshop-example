@@ -10,10 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { PageNotFoundComponent } from './page-not-found.component';
 import { environment } from '../environments/environment';
-import { HttpMockModule, MOCKS_GROUPS } from '../../mock-interceptor';
-import { ADVANCEDGUSIMPORTMOCK } from '../../mock-interceptor/mocks/advanced-gus-import.mock';
-import { MOCKFEEDBACK } from '../../mock-interceptor/mocks/feedback-prodotto.mock';
-import { QUESTIONARIPRODOTTOMOCK } from '../../mock-interceptor/mocks/questionari-prodotto.mock';
+import { HttpMockModule, HttpMockTokenProvider } from '../../mock-interceptor';
 
 
 export function actionSanitizer(action: Action) {
@@ -25,6 +22,7 @@ export function actionSanitizer(action: Action) {
   // if you wanna hide all actions payload and still wanna trace action name from debug tool
   return {type: 'PROD ' + action.type};
 }
+
 export function stateSanitizer(state: State<any>) {
   // let res = {...state, appState:{...(state as any).appState, url: 'sorry you can\'t read this'} }
   // return res;
@@ -76,11 +74,9 @@ export function stateSanitizer(state: State<any>) {
     ...HttpMockModule
   ],
   providers: [
-    {
-      provide: MOCKS_GROUPS,
-      useValue: [ADVANCEDGUSIMPORTMOCK, MOCKFEEDBACK, QUESTIONARIPRODOTTOMOCK]
-    },
+    ...HttpMockTokenProvider,
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

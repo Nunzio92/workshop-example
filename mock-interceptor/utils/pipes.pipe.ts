@@ -16,8 +16,8 @@ export class ExtractNonEnumerable implements PipeTransform {
   }
 }
 
-@Pipe({name: 'tuiMapper'})
-export class TuiMapperPipe implements PipeTransform {
+@Pipe({name: 'mapper'})
+export class MapperPipe implements PipeTransform {
   /**
    * Maps object to an arbitrary result through a mapper function
    *

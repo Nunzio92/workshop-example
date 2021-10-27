@@ -79,6 +79,7 @@ export class HttpMockFactory implements HttpInterceptor {
       // is required to deep clone the response for immutability principle!! we can face some issue on returning the same object reference,
       // spread or object.assign is not enough for deep nested object
       let deepClonedResp = CloneUtil.deepClone(mockedResponse); // for deepclone can be used any library like lodash or JSON.parse(JSON.stringify(obj))
+     // adapt logic to api structure!
       return !!status && status !== 200 ?
         throwError(new HttpErrorResponse({status, url, error: deepClonedResp || {}})) :
         of(new HttpResponse({status, body: deepClonedResp || {}}));
