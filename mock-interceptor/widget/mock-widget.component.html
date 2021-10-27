@@ -1,44 +1,43 @@
 <!-- Rounded switch -->
-Mock-Status:
-<label class="switch">
-  <input type="checkbox" [(ngModel)]="mockWidgetService.mockEnable">
-  <span class="slider round"></span>
-</label>
-<div style="display: flex; flex-direction: column">
-  <ng-container *ngFor="let mockGroup of mockGroups; let indexMockGroup = index">
-    <div [ngClass]="indexMockGroup% 2 === 0 ? 'w-black': 'w-gray'">
-      <div>{{mockGroup | extractNonEnumerable: '_mockName'}}</div>
-      <div *ngFor="let mock of (mockGroup | keyValuePipe)">
-        <div>{{mock.key}}</div>
-        <ng-container *ngFor="let entry of (mock.value | keyValuePipe)">
-          <div style="align-items: center; display: flex">
-            <label class="switch">
-              <input type="checkbox"
-                     [ngModel]="(mockWidgetService.mocksList | tuiMapper: extractEnable: mock.key: entry.key: 'enabled')"
-                     (ngModelChange)="changeStatus( mock.key, entry.key, $event)"
-                     [disabled]="!mockWidgetService.mockEnable">
-              <span class="slider round"></span>
-            </label>
-            <span>{{entry.key}}</span>
-          </div>
-        </ng-container>
+<div class="widget" [ngClass]="{'closed': !isOpen}">
+  <div class="arrow" [ngClass]="{'active': !isOpen}" (click)="isOpen = !isOpen"></div>
 
-
-      </div>
+  <div class="content-wrapper" [ngClass]="{'hide': !isOpen}" *ngIf="!!mockWidgetService.myMock">
+    <div style="align-items: center; display: flex; margin-top: 10px; padding: 8px">
+      <span>Global Mock-Status:</span>
+      <label class="switch">
+        <input type="checkbox" [(ngModel)]="mockWidgetService.mockEnable">
+        <span class="slider round"></span>
+      </label>
+      <button>Save change!</button>
     </div>
-    <!--    <div *ngFor="let mock of mockWidgetService.mocksList.GET | keyValuePipe; let index = index">-->
-    <!--      <div style="background-color: gray"-->
-    <!--           *ngIf="mock.value.mockName !== (mockWidgetService.mocksList.GET | keyValuePipe)[index-1]?.value?.mockName">{{mock.value.mockName}}</div>-->
-    <!--      <div style="align-items: center; display: flex">-->
-    <!--        <label class="switch">-->
-    <!--          <input type="checkbox" [(ngModel)]="mock.value.enabled" [disabled]="!mockWidgetService.mockEnable">-->
-    <!--          <span class="slider round"></span>-->
-    <!--        </label>-->
-    <!--        <span>{{mock.key}}</span>-->
-    <!--      </div>-->
-    <!--    </div>-->
-  </ng-container>
+    <div style="display: flex; flex-direction: column">
+      <ng-container *ngFor="let mockGroup of mockGroups; let indexMockGroup = index">
+
+        <div class="accordion"
+             [class.active]="activeAccordionIndex === indexMockGroup"
+             (click)="activeAccordionIndex = indexMockGroup">
+          {{mockGroup | extractNonEnumerable: '_mockName'}}
+        </div>
+        <div class="panel" [ngStyle]="{'display': activeAccordionIndex === indexMockGroup ? 'block': 'none'}">
+          <div *ngFor="let mock of (mockGroup | keyValuePipe)">
+            <div>{{mock.key}}</div>
+            <ng-container *ngFor="let entry of (mock.value | keyValuePipe)">
+              <div style="align-items: center; display: flex">
+                <label class="switch">
+                  <input type="checkbox"
+                         [ngModel]="(mockWidgetService.myMock | tuiMapper: extractEnable: mock.key: entry.key: 'enabled')"
+                         (ngModelChange)="changeStatus( mock.key, entry.key, $event)"
+                         [disabled]="!mockWidgetService.mockEnable">
+                  <span class="slider round"></span>
+                </label>
+                <span>{{entry.key}}</span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
 </div>
-
-
 

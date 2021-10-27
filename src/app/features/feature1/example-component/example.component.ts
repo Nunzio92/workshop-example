@@ -9,7 +9,7 @@ import { getModel1 } from '../store/feature1.action';
 import { take, takeUntil } from 'rxjs/operators';
 import { StoreDevtools } from '@ngrx/store-devtools';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { herPure } from '../../../core/pure';
+import { pure } from '../../../core/pure';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -49,16 +49,15 @@ export class ExampleComponent implements OnInit, OnDestroy {
         this.href = "data:text/json;charset=utf-8," + JSON.stringify({...v});
       });
     }
-    this.http.get('gusConfig/getFlussiCustomizzabili').subscribe()
   }
 
-  @herPure
+  @pure
   get getTestValue(){
     return this.testValue.val;
   }
 
-  setNewVal(){
-    this.testValue = {...this.testValue, val: this.testValue.val+1};
+  httpCall(){
+    this.http.get('gusConfig/getFlussiCustomizzabili').subscribe()
   }
 
   downloadModel1() {

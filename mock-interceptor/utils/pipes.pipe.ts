@@ -1,10 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { RequestMethodType } from '../http-mock-factory';
 
 @Pipe({name: 'keyValuePipe', pure: true})
 export class KeyValuePipe implements PipeTransform {
 
-  transform<T extends string, G>(obj: {[key in T]?:G }): {key: T, value: G}[]{
+  transform<T extends string, G>(obj: { [key in T]?: G }): { key: T, value: G }[] {
     return Object.keys(obj).map((key) => ({key: key as T, value: (obj as any)[key]}));
   }
 }
@@ -12,7 +11,7 @@ export class KeyValuePipe implements PipeTransform {
 @Pipe({name: 'extractNonEnumerable', pure: true})
 export class ExtractNonEnumerable implements PipeTransform {
 
-  transform(obj: any, paramName: string){
+  transform(obj: any, paramName: string) {
     return obj[paramName];
   }
 }

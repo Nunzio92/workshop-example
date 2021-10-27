@@ -11,11 +11,11 @@ import { Observable, of, throwError } from 'rxjs';
 import { delay, dematerialize, materialize, mergeMap } from 'rxjs/operators';
 import { AllKeyOfType, SomeKeyOfType } from './utils/typeTranformation.type';
 import { CloneUtil } from './utils/clone-util';
-import { MockWidgetService } from './widget/mock-widget.service';
+import { HttpMockService } from './http-mock.service';
 import { MOCKS_GROUPS } from './mock-interceptor.module';
 import { MappedMock } from './utils/mock-group';
 
-enum RequestMethods {
+export enum RequestMethods {
   GET = 'GET', POST = 'POST', PUT = 'PUT', DELETE = 'DELETE', OPTIONS = 'OPTIONS', HEAD = 'HEAD', PATCH = 'PATCH'
 }
 
@@ -26,18 +26,11 @@ export type RequestMethodType = keyof typeof RequestMethods;
  */
 @Injectable()
 export class HttpMockFactory implements HttpInterceptor {
-  myMock: AllKeyOfType<RequestMethodType, MappedMock>;
-  myMockKeys: AllKeyOfType<RequestMethodType, string[]>;
+  private _myMockKeys: AllKeyOfType<RequestMethodType, string[]>;
 
-  constructor(private mockWidgetService: MockWidgetService,
-              @Inject(MOCKS_GROUPS) private mockGroups: SomeKeyOfType<RequestMethodType>[]) {
-    if (mockGroups.length === 0) {
-      throw new Error('MockInterceptor is enabled but no mocks are provided! Inject some mock through MOCKS_GROUPS token.');
-    }
+  constructor(private mockWidgetService: HttpMockService,) {
     // Merge all mock files and generate a smaller structure that contains all mocks url divided for RequestMethods
-    this.myMock = HttpMockFactory.mergeMockSmart(this.mockGroups);
-    this.mockWidgetService.initMockList(this.myMock);
-    this.myMockKeys = HttpMockFactory.extractOrderedKeys(this.myMock);
+    this._myMockKeys = HttpMockFactory.extractOrderedKeys(this.mockWidgetService.myMock);
   }
 
   private static extractOrderedKeys(object: AllKeyOfType<RequestMethodType, MappedMock>): AllKeyOfType<RequestMethodType, string[]> {
@@ -46,7 +39,6 @@ export class HttpMockFactory implements HttpInterceptor {
       return {...accumulator, [currentValue]: HttpMockFactory.moveGenericKeys(keys)};
     }, {}) as AllKeyOfType<RequestMethodType, string[]>;
   }
-
 
   private static moveGenericKeys(keys: string[]): string [] {
     let keysToMove: string[] = [];
@@ -57,28 +49,6 @@ export class HttpMockFactory implements HttpInterceptor {
     });
     return [...keys, ...keysToMove];
   }
-
-
-  private static mergeMockSmart(mockGroups: SomeKeyOfType<RequestMethodType, MappedMock>[]): AllKeyOfType<RequestMethodType, MappedMock> {
-    return mockGroups.reduce((accumulator, currentValue) => {
-      (Object.keys(RequestMethods) as RequestMethodType[]).forEach(v => {
-        accumulator = {...accumulator, [v]: {...accumulator[v], ...currentValue[v]}};
-      });
-      return accumulator;
-    }) as AllKeyOfType<RequestMethodType, MappedMock>;
-  }
-
-  // private static mergeMockSmart(...objs: SomeKeyOfType<RequestMethodType, {}>[]): SomeKeyOfType<RequestMethodType, {}> {
-  //   return objs.reduce((accumulator: any, currentValue: any) => {
-  //     Object.keys(RequestMethods).forEach(v => {
-  //       let newValue = currentValue[v] ? Object.keys(currentValue[v]).reduce((acc: any, curr: any) =>
-  //         ({...acc, ...{[curr]: {value: currentValue[v][curr], enabled: true, mockName: 'test'}}}), {}) : {}
-  //       accumulator = {...accumulator, [v]: {...accumulator[v], ...newValue}};
-  //     });
-  //     return accumulator;
-  //   });
-  // }
-
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // wrap in delayed observable to simulate server api call
@@ -96,13 +66,12 @@ export class HttpMockFactory implements HttpInterceptor {
     let {url, method, headers, body} = request;
 
     // replace ** with regexp (.*|.*/) for metch all dynamic parameter in the url
-    // @ts-ignore
-    let keyOfResponse = this.myMockKeys[method]?.find((key: string) => {
+    let keyOfResponse = this._myMockKeys[(method as RequestMethodType)]?.find((key: string) => {
       let regExp = new RegExp(key.replace('**', '(.*|.*/)') + '$');
       return regExp.test(url);
     }) || '';
-    // @ts-ignore
-    let mockedResponse = this.myMock[method][keyOfResponse]?.enabled ? this.myMock[method][keyOfResponse].value : null;
+    let mockedResponse = this.mockWidgetService.myMock[(method as RequestMethodType)][keyOfResponse]?.enabled ?
+      this.mockWidgetService.myMock[(method as RequestMethodType)][keyOfResponse].value : null;
 
     if (!!mockedResponse) {
       console.log(`%c[mock] intercept request to ${url} with this body`, 'background: #222; color: #bada55', body);

@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { MockWidgetService } from './mock-widget.service';
+import { HttpMockService } from '../http-mock.service';
 import { MOCKS_GROUPS } from '../mock-interceptor.module';
-import { SomeKeyOfType } from '../utils/typeTranformation.type';
-import { RequestMethodType } from '../http-mock-factory';
+import { AllKeyOfType, SomeKeyOfType } from '../utils/typeTranformation.type';
+import { HttpMockFactory, RequestMethodType } from '../http-mock-factory';
 import { MappedMock } from '../utils/mock-group';
 
 @Component({
@@ -12,7 +12,10 @@ import { MappedMock } from '../utils/mock-group';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MockWidgetComponent implements OnInit {
-  constructor(public mockWidgetService: MockWidgetService,
+  activeAccordionIndex = 0;
+  isOpen = true;
+
+  constructor(public mockWidgetService: HttpMockService,
               @Inject(MOCKS_GROUPS) public mockGroups: SomeKeyOfType<RequestMethodType, MappedMock>[]) {
   }
 
@@ -25,8 +28,8 @@ export class MockWidgetComponent implements OnInit {
   }
 
   changeStatus(key: RequestMethodType, key2: string, $event: any) {
-    if (!!this.mockWidgetService.mocksList?.[key]?.[key2]?.enabled) {
-      this.mockWidgetService.mocksList[key][key2].enabled = $event;
+    if (!!this.mockWidgetService.myMock?.[key]?.[key2]?.enabled) {
+      this.mockWidgetService.myMock[key][key2].enabled = $event;
     }
   }
 }

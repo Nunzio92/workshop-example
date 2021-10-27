@@ -7,7 +7,7 @@
  *
  * CAUTION: `this` is not available inside such functions/getters, they must be pure.
  */
-export function herPure<T>(
+export function pure<T>(
     _target: Object,
     propertyKey: string,
     {get, enumerable, value}: TypedPropertyDescriptor<T>,

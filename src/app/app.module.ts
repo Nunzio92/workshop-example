@@ -10,7 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { PageNotFoundComponent } from './page-not-found.component';
 import { environment } from '../environments/environment';
-import { devDep, MockInterceptorModule } from '../../mock-interceptor';
+import { devDep } from '../../mock-interceptor';
 
 
 export function actionSanitizer(action: Action) {
