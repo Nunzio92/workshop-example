@@ -10,7 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { PageNotFoundComponent } from './page-not-found.component';
 import { environment } from '../environments/environment';
-import { HttpMockModule, HttpMockTokenProvider } from '../../mock-interceptor';
+import { HttpMockModule } from '../../mock-interceptor';
 
 
 export function actionSanitizer(action: Action) {
@@ -73,9 +73,7 @@ export function stateSanitizer(state: State<any>) {
     }),
     ...HttpMockModule
   ],
-  providers: [
-    ...HttpMockTokenProvider,
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

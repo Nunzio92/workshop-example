@@ -28,7 +28,7 @@ export class MockWidgetComponent implements OnInit {
   }
 
   changeStatus(key: RequestMethodType, key2: string, $event: any) {
-    if (!!this.mockWidgetService.myMock?.[key]?.[key2]?.enabled) {
+    if (!!this.mockWidgetService.myMock?.[key]?.[key2]) {
       this.mockWidgetService.myMock[key][key2].enabled = $event;
     }
   }

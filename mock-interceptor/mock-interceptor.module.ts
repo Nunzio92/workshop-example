@@ -41,12 +41,13 @@ export class MockInterceptorModule {
     throwIfAlreadyLoaded(parentModule, 'MockInterceptorModule');
   }
 
-  static forRoot(): ModuleWithProviders<MockInterceptorModule> {
+  static forRoot(mocksGroups: SomeKeyOfType<RequestMethodType, MappedMock>[]): ModuleWithProviders<MockInterceptorModule> {
     return {
       ngModule: MockInterceptorModule,
       providers: [
         {provide: APP_INITIALIZER, multi: true, useFactory: httpMockInit, deps: [HttpMockService]},
-        {provide: HTTP_INTERCEPTORS, useClass: HttpMockFactory, multi: true}
+        {provide: HTTP_INTERCEPTORS, useClass: HttpMockFactory, multi: true},
+        {provide: MOCKS_GROUPS, useValue: mocksGroups}
       ],
     };
   }

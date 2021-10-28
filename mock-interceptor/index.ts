@@ -7,12 +7,6 @@ import { QUESTIONARIPRODOTTOMOCK } from './mocks/questionari-prodotto.mock';
 export * from './mock-interceptor.module';
 
 export const HttpMockModule = [
-  MockInterceptorModule.forRoot()
+  MockInterceptorModule.forRoot([ADVANCEDGUSIMPORTMOCK, MOCKFEEDBACK, QUESTIONARIPRODOTTOMOCK])
 ];
 
-export const HttpMockTokenProvider = [
-  {
-    provide: MOCKS_GROUPS,
-    useValue: [ADVANCEDGUSIMPORTMOCK, MOCKFEEDBACK, QUESTIONARIPRODOTTOMOCK]
-  }
-]
