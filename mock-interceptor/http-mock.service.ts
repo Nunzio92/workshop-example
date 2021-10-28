@@ -1,9 +1,7 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import { createCustomElement, NgElement, WithProperties } from '@angular/elements';
 import { MockWidgetComponent } from './widget/mock-widget.component';
-import { AllKeyOfType, SomeKeyOfType } from './utils/typeTranformation.type';
-import { MappedMock } from './utils/mock-group';
-import { RequestMethods, RequestMethodType } from './http-mock-factory';
+import { AllKeyOfType, MappedMock, RequestMethods, RequestMethodType, SomeKeyOfType } from './utils/models';
 import { MOCKS_GROUPS } from './mock-interceptor.module';
 
 

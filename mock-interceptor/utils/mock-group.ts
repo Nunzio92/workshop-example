@@ -1,7 +1,5 @@
-import { SomeKeyOfType } from './typeTranformation.type';
-import { RequestMethodType } from '../http-mock-factory';
+import { MappedMock, RequestMethodType, SomeKeyOfType } from './models';
 
-export type MappedMock = {[key: string]: { value: any, enabled: boolean, mockName: string }}
 
 export function createMockGroup(mockName: string, values: SomeKeyOfType<RequestMethodType>): SomeKeyOfType<RequestMethodType, MappedMock> {
   let returnObject = (Object.keys(values) as RequestMethodType[]).reduce((accReqMet, currReqMet) =>

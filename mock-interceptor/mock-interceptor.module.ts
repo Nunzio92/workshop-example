@@ -1,13 +1,12 @@
 import { APP_INITIALIZER, InjectionToken, ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpMockFactory, RequestMethodType } from './http-mock-factory';
+import { HttpMockFactory } from './http-mock-factory';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MockWidgetComponent } from './widget/mock-widget.component';
 import { HttpMockService } from './http-mock.service';
 import { FormsModule } from '@angular/forms';
-import { SomeKeyOfType } from './utils/typeTranformation.type';
+import { MappedMock, RequestMethodType, SomeKeyOfType } from './utils/models';
 import { ExtractNonEnumerable, KeyValuePipe, MapperPipe } from './utils/pipes.pipe';
-import { MappedMock } from './utils/mock-group';
 import { throwIfAlreadyLoaded } from './utils/module-import-guard';
 
 export const MOCKS_GROUPS = new InjectionToken<SomeKeyOfType<RequestMethodType, MappedMock>[]>(

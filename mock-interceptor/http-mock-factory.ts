@@ -9,16 +9,10 @@ import {
 } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, dematerialize, materialize, mergeMap } from 'rxjs/operators';
-import { AllKeyOfType } from './utils/typeTranformation.type';
+import { AllKeyOfType, MappedMock, RequestMethodType } from './utils/models';
 import { CloneUtil } from './utils/clone-util';
 import { HttpMockService } from './http-mock.service';
-import { MappedMock } from './utils/mock-group';
 
-export enum RequestMethods {
-  GET = 'GET', POST = 'POST', PUT = 'PUT', DELETE = 'DELETE', OPTIONS = 'OPTIONS', HEAD = 'HEAD', PATCH = 'PATCH'
-}
-
-export type RequestMethodType = keyof typeof RequestMethods;
 
 /**
  * inside the mock file can be used ** for dynamic params ex: myurl/api1/dettaglio/**

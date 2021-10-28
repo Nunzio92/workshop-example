@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { HttpMockService } from '../http-mock.service';
 import { MOCKS_GROUPS } from '../mock-interceptor.module';
-import { AllKeyOfType, SomeKeyOfType } from '../utils/typeTranformation.type';
-import { HttpMockFactory, RequestMethodType } from '../http-mock-factory';
-import { MappedMock } from '../utils/mock-group';
+import { MappedMock, RequestMethodType, SomeKeyOfType } from '../utils/models';
 
 @Component({
   selector: 'mock-widget',
@@ -23,11 +21,11 @@ export class MockWidgetComponent implements OnInit {
   }
 
 
-  extractEnable(source: any, prop1: string, prop2: string, prop3: string) {
+  extractEnable(source: any, prop1: string, prop2: string, prop3: string): boolean {
     return source?.[prop1]?.[prop2]?.[prop3]
   }
 
-  changeStatus(key: RequestMethodType, key2: string, $event: any) {
+  changeStatus(key: RequestMethodType, key2: string, $event: any): void {
     if (!!this.mockWidgetService.myMock?.[key]?.[key2]) {
       this.mockWidgetService.myMock[key][key2].enabled = $event;
     }
