@@ -7,6 +7,10 @@ export * from './mock-interceptor.module';
 
 // this file must be replaced with index.prod.ts during production build
 export const HttpMockModule = [
-  MockInterceptorModule.forRoot([ADVANCEDGUSIMPORTMOCK, MOCKFEEDBACK, QUESTIONARIPRODOTTOMOCK])
+  MockInterceptorModule.forRoot([
+    ADVANCEDGUSIMPORTMOCK,
+    MOCKFEEDBACK,
+    QUESTIONARIPRODOTTOMOCK
+  ], true)
 ];
 

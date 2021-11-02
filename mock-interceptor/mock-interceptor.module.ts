@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpMockFactory } from './http-mock-factory';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MockWidgetComponent } from './widget/mock-widget.component';
-import { HttpMockService } from './http-mock.service';
+import { MockService } from './mock.service';
 import { FormsModule } from '@angular/forms';
 import { MappedMock, RequestMethodType, SomeKeyOfType } from './utils/models';
 import { ExtractNonEnumerable, KeyValuePipe, MapperPipe } from './utils/pipes.pipe';
@@ -16,10 +16,6 @@ export const MOCKS_GROUPS = new InjectionToken<SomeKeyOfType<RequestMethodType, 
   },
 );
 
-export function httpMockInit(httpMockService: HttpMockService) { // aot dosen't support arrow funciton
-  return () => httpMockService.init();
-}
-
 @NgModule({
   imports: [
     CommonModule,
@@ -29,10 +25,7 @@ export function httpMockInit(httpMockService: HttpMockService) { // aot dosen't 
     MockWidgetComponent,
     KeyValuePipe,
     ExtractNonEnumerable,
-    MapperPipe
-  ],
-  exports: [
-    MockWidgetComponent
+    MapperPipe,
   ]
 })
 export class MockInterceptorModule {
@@ -40,11 +33,17 @@ export class MockInterceptorModule {
     throwIfAlreadyLoaded(parentModule, 'MockInterceptorModule');
   }
 
-  static forRoot(mocksGroups: SomeKeyOfType<RequestMethodType, MappedMock>[]): ModuleWithProviders<MockInterceptorModule> {
+  static forRoot(mocksGroups: SomeKeyOfType<RequestMethodType, MappedMock>[], enableWidget = true): ModuleWithProviders<MockInterceptorModule> {
     return {
       ngModule: MockInterceptorModule,
       providers: [
-        {provide: APP_INITIALIZER, multi: true, useFactory: httpMockInit, deps: [HttpMockService]},
+        MockService,
+        {
+          provide: APP_INITIALIZER,
+          useFactory: (httpMockService: MockService) => () => httpMockService.init(enableWidget),
+          deps: [MockService],
+          multi: true,
+        },
         {provide: HTTP_INTERCEPTORS, useClass: HttpMockFactory, multi: true},
         {provide: MOCKS_GROUPS, useValue: mocksGroups}
       ],

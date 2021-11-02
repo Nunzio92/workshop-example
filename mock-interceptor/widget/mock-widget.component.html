@@ -21,7 +21,7 @@
         </div>
         <div class="panel" [ngStyle]="{'display': activeAccordionIndex === indexMockGroup ? 'block': 'none'}">
           <div *ngFor="let mock of (mockGroup | keyValuePipe)">
-            <div>{{mock.key}}</div>
+            <div style="font-weight: bold">{{mock.key}}</div>
             <ng-container *ngFor="let entry of (mock.value | keyValuePipe)">
               <div style="align-items: center; display: flex">
                 <label class="switch">

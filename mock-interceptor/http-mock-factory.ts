@@ -11,7 +11,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { delay, dematerialize, materialize, mergeMap } from 'rxjs/operators';
 import { AllKeyOfType, MappedMock, RequestMethodType } from './utils/models';
 import { CloneUtil } from './utils/clone-util';
-import { HttpMockService } from './http-mock.service';
+import { MockService } from './mock.service';
 
 
 /**
@@ -21,7 +21,7 @@ import { HttpMockService } from './http-mock.service';
 export class HttpMockFactory implements HttpInterceptor {
   private _myMockKeys: AllKeyOfType<RequestMethodType, string[]>;
 
-  constructor(private mockWidgetService: HttpMockService,) {
+  constructor(private mockWidgetService: MockService,) {
     // Generate iterable structure for easy regex test
     this._myMockKeys = HttpMockFactory.extractOrderedKeys(this.mockWidgetService.myMock);
   }

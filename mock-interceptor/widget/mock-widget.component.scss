@@ -11,7 +11,8 @@
   right: 0;
   background-color: #71C9CE;
   height: 100vh;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   box-shadow: 0px 0px 10px 0px #888888;
   &.closed{
     top: calc(50% - 30px);
@@ -21,7 +22,7 @@
 }
 
 .content-wrapper {
-  width: 100%;
+  //width: 100%;
   transition: all 0.25s;
   opacity: 1;
   margin-bottom: 20px;
@@ -111,7 +112,7 @@ input:checked + .slider:before {
   background-color: #eee;
   color: #444;
   cursor: pointer;
-  padding: 18px;
+  padding: 16px;
   width: 100%;
   text-align: left;
   border: none;
@@ -126,7 +127,7 @@ input:checked + .slider:before {
 
 /* Style the accordion panel. Note: hidden by default */
 .panel {
-  padding: 0 18px;
+  padding: 8px 16px;
   background-color: white;
   display: none;
   overflow: hidden;
